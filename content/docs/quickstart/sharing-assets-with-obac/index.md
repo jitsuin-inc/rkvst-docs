@@ -18,7 +18,7 @@ toc: true
 {{< /caution >}}
 
 {{< warning >}}
-**Warning:** To use OBAC you will need to share with an external organization.
+**Warning:** To use OBAC, you will need to share with an external organization.
 {{< /warning >}}
 
 Organization-Based Access Control (OBAC) policies have a lot in common with Attribute-Based Access Control (ABAC) policies; they apply the same controls with two different classes of Actor.
@@ -29,9 +29,10 @@ Where they differ is that OBAC shares only with Root Users of an External Organi
 
 In order to share Assets and their details with another Organization or Tenant, we must first import the ID of the External Organization.
 
+
 ### Finding Your Own ID
 
-1. As a Root User, navigate to `Access Policies`
+1. As a Root User, navigate to `Access Policies`.
 
 {{< img src="PolicyManage.png" alt="Rectangle" caption="<em>Managing Policies</em>" class="border-0" >}}
 
@@ -47,13 +48,72 @@ This string is the one you should share with a 3rd Party who wants to share thei
 
 {{< img src="PolicyManage.png" alt="Rectangle" caption="<em>Managing Policies</em>" class="border-0" >}}
 
-2. Select the Subjects Tab and then `Import Subject`.
+2. Import Subject.
 
+{{< tabs name="add_subject_OBAC" >}}
+{{{< tab name="UI" >}}
+Select the Subjects Tab and then `Import Subject`.
 {{< img src="PolicyOBACSubjectImport.png" alt="Rectangle" caption="<em>Importing a Subject</em>" class="border-0" >}}
+{{< /tab >}}
+{{< tab name="YAML" >}}
 
-3. You will be presented with a form; the `Subject String` is the ID of the Organization with which you wish to share Asset evidence. The `Name` is a Friendly Name for you to label the imported organization.
+{{< note >}}
+**Note:** Note: By default, newly created Applications will always have a Non-Root User permission to the API. You must add the Application as a Root User to elevate it’s permissions.
 
+You can add an App Registration as a Root User using the Manage RKVST screen, where the issuer will be `https://app.rkvst.io/appidpv1` and the subject will be your App Registration’s `CLIENT_ID`.
+{{< /note >}}
+
+The RKVST YAML runner is executed as a series of steps, each step representing a single operation with an `action`.
+
+In order to create an subject, we use the action `SUBJECTS_CREATE_FROM_B64`.
+ 
+```yaml
+---
+steps:
+  - step:
+      action: SUBJECTS_CREATE_FROM_B64
+```
+{{< /tab >}}}
+{{< /tabs >}}
+
+
+
+3. Add the `Subject String` and `Name`/`subject_label`. `Subject String` is the ID of the Organization with which you wish to share Asset evidence. The `Name` is a friendly name for you to label the imported organization.
+
+{{< tabs name="add_subject_string_OBAC" >}}
+{{{< tab name="UI" >}}
+You will be presented with a form to input your `Subject String` and `Name`. 
 {{< img src="PolicyOBACSubjectAdd.png" alt="Rectangle" caption="<em>Adding the Subject</em>" class="border-0" >}}
+{{< /tab >}}
+{{< tab name="YAML" >}}
+`subject_label` is not required, but must be present to reference the subject in later actions. 
+
+```yaml
+---
+steps:
+  - step:
+      action: SUBJECTS_CREATE_FROM_B64
+      description: Import a subjects entity.
+      print_response: true
+      subject_label: Example Subject
+    display_name: Example Subject
+    subject_string: >-
+      eyJpZGVudGl0eSI6ICJzdWJqZWN0cy8wMDAwMDAwMC0wMDAwLTAwMDAtMDA
+      wMC0wMDAwMDAwMDAwMDAiLCAiZGlzcGxheV9uYW1lIjogIlNlbGYiLCAid2
+      FsbGV0X3B1Yl9rZXkiOiBbIjA0YzExNzNiZjc4NDRiZjFjNjA3Yjc5YzE4Z
+      GIwOTFiOTU1OGZmZTU4MWJmMTMyYjhjZjNiMzc2NTcyMzBmYTMyMWEwODgw
+      YjU0YTc5YTg4YjI4YmM3MTBlZGU2ZGNmM2Q4MjcyYzUyMTBiZmQ0MWVhODM
+      xODhlMzg1ZDEyYzE4OWMiXSwgIndhbGxldF9hZGRyZXNzIjogWyIweDk5Rm
+      E0QUFCMEFGMkI1M2YxNTgwODNEOGYyNDRiYjQ1MjMzODgxOTciXSwgInRlc
+      3NlcmFfcHViX2tleSI6IFsiZWZkZzlKMFFoU0IyZzRJeEtjYVhnSm1OS2J6
+      cHhzMDNGRllJaVlZdWVraz0iXSwgInRlbmFudCI6ICIiLCAiY29uZmlybWF
+      0aW9uX3N0YXR1cyI6ICJDT05GSVJNQVRJT05fU1RBVFVTX1VOU1BFQ0lGSU
+      VEIn0=
+```
+{{< /tab >}}}
+{{< /tabs >}}
+
+
 
 ## Creating an OBAC Policy
 
